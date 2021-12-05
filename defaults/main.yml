@@ -1,2 +1,4 @@
 ---
-# defaults file for nicenemo.debianbase
+packages_to_install : ['sudo']
+packages_to remove: []
+users_to_delete: []
