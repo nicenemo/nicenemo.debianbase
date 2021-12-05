@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include nicenemo.debianbase"
+      include_role:
+        name: "nicenemo.debianbase"

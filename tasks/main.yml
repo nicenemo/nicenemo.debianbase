@@ -1,0 +1,58 @@
+---
+- name: Use Dutch Debian mirrors.
+  replace:
+    path: /etc/apt/sources.list
+    regexp: 'deb\.'
+    replace: 'ftp.nl.'
+- name: Update apt-get repo and cache.
+  apt:
+    upgrade: dist
+    update_cache: yes
+    force_apt_get: no
+    autoremove: yes
+    cache_valid_time: 3600
+- name: Install packages.
+  apt:
+    name: "{{ ','.join(packages_to_install) }}"
+    state: latest
+    autoremove: yes
+- name: Remove packages.
+  apt:
+    name: "{{ ','.join(packages_to_remove) }}"
+    state: absent
+    update_cache: yes
+    force_apt_get: no
+    autoremove: yes
+    cache_valid_time: 3600
+- name: Ensure syslog-ng is started
+  service:
+    name: syslog-ng
+    enabled: yes
+    state: started
+- name: Add users | create users, shell, home dirs
+  user:
+    name: '{{ item | basename }}'
+    shell: '/bin/bash'
+    createhome: true
+    groups: sudo
+    comment: 'create with care by Ansible'
+  with_fileglob: "authorized_keys/*"
+- name: Setup | authorized key upload
+  authorized_key:
+    user: '{{ item | basename }}'
+    key: "{{ lookup('file', '{{ playbook_dir }}/authorized_keys/{{ item | basename }}') }}"
+    path: '/home/{{ item | basename }}/.ssh/authorized_keys'
+    manage_dir: true
+  with_fileglob: "{{ playbook_dir }}/authorized_keys/*"
+- name: Delete users.
+  user:
+    name: '{{ item }}'
+    remove: true
+    state: absent
+    force: true
+  loop: "{{users_to_delete }}"
+- name: Sudo without password for sudo group
+  copy:
+    content: '%sudo ALL=(ALL:ALL) NOPASSWD:ALL'
+    dest: /etc/sudoers.d/sudo_nopasswd
+    mode: "0440"
