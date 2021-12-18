@@ -1,4 +1,8 @@
 ---
+- name: Set time to UTC for both hardware clock and timezone.
+  timezone:
+    hwclock: UTC
+    name: UTC
 - name: Use Dutch Debian mirrors.
   replace:
     path: /etc/apt/sources.list
