@@ -28,11 +28,6 @@
     force_apt_get: no
     autoremove: yes
     cache_valid_time: 3600
-- name: Ensure syslog-ng is started
-  service:
-    name: syslog-ng
-    enabled: yes
-    state: started
 - name: Add users | create users, shell, home dirs
   user:
     name: '{{ item | basename }}'

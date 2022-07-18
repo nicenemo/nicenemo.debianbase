@@ -1,7 +1,7 @@
 galaxy_info:
   author: Hans Kruse
-  description: your role description
-  company: your company (optional)
+  description: Base debian install
+  company:  ""
   license: MIT
   min_ansible_version: 2.12.1
   platforms:
